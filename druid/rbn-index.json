@@ -1,0 +1,107 @@
+{
+  "type" : "index_hadoop",
+  "spec" : {
+    "ioConfig" : {
+      "type" : "hadoop",
+      "inputSpec" : {
+        "type" : "static",
+        "paths" : "/home/netom/hobbi/rbn-analytics/druid/rbn-data.json"
+      }
+    },
+    "dataSchema" : {
+      "dataSource" : "reversebeacon",
+      "granularitySpec" : {
+        "type" : "uniform",
+        "segmentGranularity" : "day",
+        "queryGranularity" : "none",
+        "intervals" : ["2009-02-21/2016-04-25"]
+      },
+      "parser" : {
+        "type" : "string",
+        "parseSpec" : {
+          "format" : "json",
+          "dimensionsSpec" : {
+            "dimensions" : [
+              "callsign",
+              "de_pfx",
+              "de_cont",
+              "freq",
+              "band",
+              "dx",
+              "dx_pfx",
+              "dx_cont",
+              "mode",
+              "db",
+              "speed",
+              "tx_mode"
+            ]
+          },
+          "timestampSpec" : {
+            "format" : "auto",
+            "column" : "date"
+          }
+        }
+      },
+      "metricsSpec" : [
+        {
+          "name" : "count",
+          "type" : "count"
+        },
+        {
+          "name" : "unique_callsign",
+          "type" : "hyperUnique",
+          "fieldName" : "callsign"
+        },
+        {
+          "name" : "unique_de_pfx",
+          "type" : "hyperUnique",
+          "fieldName" : "de_pfx"
+        },
+        {
+          "name" : "unique_de_cont",
+          "type" : "hyperUnique",
+          "fieldName" : "de_cont"
+        },
+        {
+          "name" : "unique_band",
+          "type" : "hyperUnique",
+          "fieldName" : "band"
+        },
+        {
+          "name" : "unique_dx",
+          "type" : "hyperUnique",
+          "fieldName" : "dx"
+        },
+        {
+          "name" : "unique_dx_pfx",
+          "type" : "hyperUnique",
+          "fieldName" : "dx_pfx"
+        },
+        {
+          "name" : "unique_dx_cont",
+          "type" : "hyperUnique",
+          "fieldName" : "dx_cont"
+        },
+        {
+          "name" : "unique_mode",
+          "type" : "hyperUnique",
+          "fieldName" : "mode"
+        },
+        {
+          "name" : "unique_tx_mode",
+          "type" : "hyperUnique",
+          "fieldName" : "tx_mode"
+        }
+      ]
+    },
+    "tuningConfig" : {
+      "type" : "hadoop",
+      "ignoreInvalidRows": true,
+      "partitionsSpec" : {
+        "type" : "hashed",
+        "targetPartitionSize" : 5000000
+      },
+      "jobProperties" : {}
+    }
+  }
+}
