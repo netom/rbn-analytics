@@ -27,7 +27,7 @@ def datareader():
     i = 1
     for content in fl:
         fname = "data/" + content
-
+        
         zf = zipfile.ZipFile(fname, "r")
 
         for zipinfo in zf.infolist():
