@@ -24,7 +24,6 @@ def datareader():
 
     fl.sort()
 
-    i = 1
     for content in fl:
         fname = "data/" + content
         
@@ -32,6 +31,7 @@ def datareader():
 
         for zipinfo in zf.infolist():
             csvf = zf.open(zipinfo.filename, "r")
+            i = 1
             for l in csvf:
                 values = l.strip().split(",")
                 if values[0] == "callsign" or len(values) <= 1:
@@ -39,7 +39,18 @@ def datareader():
                 values[3] = float(values[3]) # freq
                 values[9] = float(values[9]) # db
 
-                values[10] = datetime.datetime.strptime(values[10][:19], '%Y-%m-%d %H:%M:%S')
+                oldv10 = values[10]
+                values[10] = values[10][0:10] + "T" + values[10][11:19]
+
+                _id = (
+                    values[10][0:4] +
+                    values[10][5:7] +
+                    values[10][8:10] +
+                    values[10][11:13] +
+                    values[10][14:16] +
+                    values[10][17:19] +
+                    "%08d" % i
+                )
 
                 doc = dict(zip(fields, values))
 
@@ -47,7 +58,7 @@ def datareader():
                     '_op_type': 'index',
                     '_index': 'rbn',
                     '_type': 'rbnentry',
-                    '_id': i,
+                    '_id': _id,
                     '_source': doc
                 }
 
@@ -56,5 +67,5 @@ def datareader():
 
         print fname
 
-for results in elasticsearch.helpers.streaming_bulk(es, datareader()):
+for results in elasticsearch.helpers.streaming_bulk(es, datareader(), chunk_size=5000):
     pass
