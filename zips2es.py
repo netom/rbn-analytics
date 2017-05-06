@@ -25,13 +25,18 @@ def datareader():
     fl.sort()
 
     for content in fl:
+        #if content < '20130101.zip' or content >= '20160101.zip':
+        #    print "Skipping %s" % content
+        #    continue
+
         fname = "data/" + content
-        
+
         zf = zipfile.ZipFile(fname, "r")
 
+        i = 0
         for zipinfo in zf.infolist():
             csvf = zf.open(zipinfo.filename, "r")
-            i = 1
+
             for l in csvf:
                 values = l.strip().split(",")
                 if values[0] == "callsign" or len(values) <= 1:
@@ -42,15 +47,7 @@ def datareader():
                 oldv10 = values[10]
                 values[10] = values[10][0:10] + "T" + values[10][11:19]
 
-                _id = (
-                    values[10][0:4] +
-                    values[10][5:7] +
-                    values[10][8:10] +
-                    values[10][11:13] +
-                    values[10][14:16] +
-                    values[10][17:19] +
-                    "%08d" % i
-                )
+                _id = content[:-4] + str(i)
 
                 doc = dict(zip(fields, values))
 
