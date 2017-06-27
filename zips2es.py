@@ -25,9 +25,9 @@ def datareader():
     fl.sort()
 
     for content in fl:
-        #if content < '20130101.zip' or content >= '20160101.zip':
-        #    print "Skipping %s" % content
-        #    continue
+        if content < '20150101.zip' or content >= '20160101.zip':
+            print "Skipping %s" % content
+            continue
 
         fname = "data/" + content
 
